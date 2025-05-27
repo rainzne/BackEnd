@@ -2,13 +2,12 @@ let express = require('express');
 let app = express();
 let bodyParser = require('body-parser');
 let assignment = require('./routes/assignments');
+let auth = require('./routes/auth'); // Nouvelle route
 
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-//mongoose.set('debug', true);
 
-// remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud s
-const uri = 'mongodb+srv://mb:P7zM3VePm0caWA1L@cluster0.zqtee.mongodb.net/assignments?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://anthonyvasta:UMSDXCfCa7hxraJ@cluster0.dqqe5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 const options = {
   useNewUrlParser: true,
@@ -26,7 +25,7 @@ mongoose.connect(uri, options)
       console.log('Erreur de connexion: ', err);
     });
 
-// Pour accepter les connexions cross-domain (CORS)
+// CORS
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -34,28 +33,30 @@ app.use(function (req, res, next) {
   next();
 });
 
-// Pour les formulaires
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 let port = process.env.PORT || 8010;
 
-// les routes
 const prefix = '/api';
 
+// Routes d'authentification
+app.route(prefix + '/auth/login')
+  .post(auth.login);
+
+app.route(prefix + '/auth/register')
+  .post(auth.register);
+
+// Routes assignments existantes
 app.route(prefix + '/assignments')
-  .get(assignment.getAssignments);
+  .get(assignment.getAssignments)
+  .post(assignment.postAssignment)
+  .put(assignment.updateAssignment);
 
 app.route(prefix + '/assignments/:id')
   .get(assignment.getAssignment)
   .delete(assignment.deleteAssignment);
 
-
-app.route(prefix + '/assignments')
-  .post(assignment.postAssignment)
-  .put(assignment.updateAssignment);
-
-// On démarre le serveur
 app.listen(port, "0.0.0.0");
 console.log('Serveur démarré sur http://localhost:' + port);
 

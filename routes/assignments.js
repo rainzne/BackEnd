@@ -4,7 +4,7 @@ let Assignment = require('../model/assignment');
 function getAssignments(req, res){
     Assignment.find((err, assignments) => {
         if(err){
-            res.send(err)
+            return res.status(500).send(err); // Ajouter return
         }
 
         res.send(assignments);
@@ -16,7 +16,9 @@ function getAssignment(req, res){
     let assignmentId = req.params.id;
 
     Assignment.findOne({id: assignmentId}, (err, assignment) =>{
-        if(err){res.send(err)}
+        if(err){
+            return res.status(500).send(err); // Ajouter return
+        }
         res.json(assignment);
     })
 }
@@ -34,7 +36,7 @@ function postAssignment(req, res){
 
     assignment.save( (err) => {
         if(err){
-            res.send('cant post assignment ', err);
+            return res.status(400).send('cant post assignment ' + err); // Ajouter return
         }
         res.json({ message: `${assignment.nom} saved!`})
     })
@@ -47,27 +49,21 @@ function updateAssignment(req, res) {
     Assignment.findByIdAndUpdate(req.body._id, req.body, {new: true}, (err, assignment) => {
         if (err) {
             console.log(err);
-            res.send(err)
+            return res.status(500).send(err); // Ajouter return
         } else {
           res.json({message: 'updated'})
         }
-
-      // console.log('updated ', assignment)
     });
-
 }
 
 // suppression d'un assignment (DELETE)
 function deleteAssignment(req, res) {
-
     Assignment.findByIdAndRemove(req.params.id, (err, assignment) => {
         if (err) {
-            res.send(err);
+            return res.status(500).send(err); // Ajouter return
         }
         res.json({message: `${assignment.nom} deleted`});
     })
 }
-
-
 
 module.exports = { getAssignments, postAssignment, getAssignment, updateAssignment, deleteAssignment };
