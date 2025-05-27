@@ -7,7 +7,7 @@ let auth = require('./routes/auth'); // Nouvelle route
 let mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const uri = 'mongodb+srv://anthonyvasta:UMSDXCfCa7hxraJ@cluster0.dqqe5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const uri = 'mongodb+srv://anthonyvasta:lCUnkrft0pqY0LeK@cluster0.dqqe5.mongodb.net/assignmentsDB?retryWrites=true&w=majority&appName=Cluster0';
 
 const options = {
   useNewUrlParser: true,
